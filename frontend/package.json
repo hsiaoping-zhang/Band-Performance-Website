@@ -1,0 +1,43 @@
+{
+  "name": "react-in-go",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node esbuild.js",
+    "build": "esbuild ./Application.jsx --bundle --outdir=build --minify --sourcemap",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node public/assets/Application.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coding-with-Robby/react-in-go.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Coding-with-Robby/react-in-go/issues"
+  },
+  "homepage": "https://github.com/Coding-with-Robby/react-in-go#readme",
+  "dependencies": {
+    "@react-oauth/google": "^0.12.1",
+    "bootstrap": "^5.3.3",
+    "formik": "^2.4.6",
+    "react": "^18.3.1",
+    "react-bootstrap": "^2.10.4",
+    "react-datepicker": "^7.3.0",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.26.1",
+    "universal-cookie": "^7.2.0",
+    "yup": "^1.4.0",
+    "react-scripts": "5.0.1"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.9",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.15.18",
+    "esbuild-sass-plugin": "^2.4.2"
+  }
+}
