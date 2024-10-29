@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { InputGroup, Modal } from 'react-bootstrap';
+import { Container, InputGroup, Modal } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
@@ -110,8 +110,8 @@ export default function UpdateActivity() {
 
     
   return (
-    <div className='m-5'>
-        <h1 style={{textAlign: "center"}}>更新活動</h1>
+    <Container>
+        <h1 className='my-2' style={{textAlign: "center"}}>更新活動</h1>
         {dataIsReady ? (
             <Formik
                 validationSchema={schema}
@@ -139,6 +139,9 @@ export default function UpdateActivity() {
                                 value={values.activityName} 
                                 onChange={handleChange}
                                 isInvalid={!!errors.activityName}/>
+                            <Form.Control.Feedback type="invalid">
+                                    活動名稱不可為空
+                                </Form.Control.Feedback>
                         </Form.Group>
         
                         <Row className="mb-3">
@@ -163,12 +166,15 @@ export default function UpdateActivity() {
                                     value={values.activityLocation} 
                                     onChange={handleChange}
                                     isInvalid={!!errors.activityLocation}
-                                    // isValid={!!errors.activityName && values.activityLocation != ""}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                    地點不可為空
+                                </Form.Control.Feedback>
                             </Form.Group>
-                        </Row>        
+                        </Row> 
+
         
-                        <Row className="mb-3">
+                        <Row className="mb-3 justify-content-md-center text-center">
                             <Form.Group as={Col} controlId="formGridYear">
                             <Form.Label>年</Form.Label>
                             <Form.Control
@@ -177,7 +183,7 @@ export default function UpdateActivity() {
                                 onChange={handleChange}
                                 isInvalid={!!errors.activityYear}/>
                             <Form.Control.Feedback type="invalid">
-                                年份不為空
+                                年份不正確
                             </Form.Control.Feedback>
                             </Form.Group>
                             
@@ -195,7 +201,7 @@ export default function UpdateActivity() {
                                 <option>...</option> */}
                             {/* </Form.Select> */}
                             <Form.Control.Feedback type="invalid">
-                                月份不為空
+                                月份不正確
                             </Form.Control.Feedback>
                             </Form.Group>
         
@@ -210,7 +216,9 @@ export default function UpdateActivity() {
                                     {errors.activityDate}
                                 </Form.Control.Feedback>
                             </Form.Group>
-        
+                        </Row>
+
+                        <Row className="mb-3 justify-content-md-center text-center">
                             <Form.Group as={Col} controlId="formGridHour">
                                 <Form.Label>時</Form.Label>
                                 <Form.Control name="activityHour"
@@ -251,10 +259,13 @@ export default function UpdateActivity() {
                         <Form.Group className="mb-3" id="formGridIsFree">
                             <Form.Check type="checkbox" label="免費" checked={isFreeChecked} onClick={handleCheckChange}/>
                         </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            更新
-                        </Button>
+                        
+                        <Row className='mx-2'>
+                            <Button variant="primary" type="submit">
+                                更新
+                            </Button>
+                        </Row>
+                        
                     </Form>
                 )
                 }
@@ -272,6 +283,6 @@ export default function UpdateActivity() {
             </Button>
             </Modal.Footer>
         </Modal>
-    </div>
+    </Container>
   );
 }

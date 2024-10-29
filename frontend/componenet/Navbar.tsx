@@ -45,11 +45,12 @@ function Navbars() {
 
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="me-auto">
-                        {
+                        {/* {
                             (permissionLevel == PermissionCode.Guest || !permissionLevel) ? (<Nav.Link href="/apply">權限申請</Nav.Link>) : null
-                        }
+                        } */}
 
-                        <Nav.Link href="/about">關於我們</Nav.Link>
+                        {/* <Nav.Link href="/about">關於我們</Nav.Link> */}
+                        <Nav.Link href="/performerActivity">查詢表演者</Nav.Link>
 
                         {
                             permissionLevel == PermissionCode.Admin ? (

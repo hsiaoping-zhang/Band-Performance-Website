@@ -5,11 +5,13 @@ import { APIUrl } from "../src/constant/global";
 import ListGroup from 'react-bootstrap/ListGroup';
 
 // import DatePicker from "react-datepicker";
-import { Badge, Card, Stack } from "react-bootstrap";
+import { Badge, Card, Col, Container, Row, Stack } from "react-bootstrap";
 import { UserContext } from "../Context";
 import { GetAuthToken, GetToken, SetToken } from "../utils/Cookie";
 import { FetchGoogleUserInfo } from "../utils/GoogleLogin";
 import InvalidJWTModal from "../componenet/InvalidJWTModal";
+import ActivityTable from "../componenet/ActivityTable";
+import ActivityBoard from "../componenet/ActivityBoard";
 // import "../../node_modules/react-datepicker/dist/react-datepicker.css";
 
 const convertTime = (time, datailTime=true) => {
@@ -33,11 +35,6 @@ const WeekSelector = ({ data, setData, loading, setLoading, handleExpired }) =>{
 	const fetchWeekActivitiy = async (weekNumber) => {
 		console.log("GET fetchWeekActivitiy")
 		
-		// return null
-		// let permissionId = GetToken("permission ID").toString()
-		// if(!permissionId){
-		// 	console.log("not user can not search")
-		// }
 		let token = GetAuthToken()
 
 		fetch(APIUrl + `/weekActivity/${weekNumber}`, {
@@ -110,7 +107,7 @@ export default function Home() {
 	}
 	const weekStartDate = new Date().setDate(today.getDate() + mondayOffset(today.getDay()))
 	const weekEndDate = new Date().setDate(today.getDate() + mondayOffset(today.getDay()) + 6)
-	const isAuth = (GetToken("level") != "") && (GetToken("level") != "guest")
+	// const isAuth = (GetToken("level") != "") && (GetToken("level") != "guest")
 	const [expired, setExpired] = useState(false)
 
 	// get area list pass to select element
@@ -152,8 +149,6 @@ export default function Home() {
 		else{
 			area = selectedArea
 		}
-		
-		// console.log("change:", data.length)
 
 		if(area == "A"){
 			setAreaData(data)
@@ -163,88 +158,40 @@ export default function Home() {
 			return activity["area"] == area
 		})
 		setAreaData(selectedActivities)
-		
-	}
-
-	const splitPerformers = (performers) => {
-		let performerArray = performers.split(",")
-		return performerArray.map((performer) => (
-			<Badge bg="secondary" style={{marginTop: "5px"}}>{performer}</Badge>
-		))
 	}
 
 	useEffect(() => {
 		fetchActivitiy();
-		// console.log(GetToken("level"))
-		console.log("isAuth:", isAuth)
 	}, []);
 
 	useEffect(() =>{
-		// console.log(selectedArea, data.length)
 		changeArea(null)
-		// setAreaData(result)
-		
 	}, [data])
 
   return (
-    <div className='m-5'> {/* style={{backgroundColor: "#f6f7f8"}} */}
-		{
-			isAuth ? (<WeekSelector data={data} setData={setData} loading={loading} handleExpired={handleTokenExpired} setLoading={setLoading}></WeekSelector>) : (
-				<div style={{textAlign: "center", margin: "5px"}}>查詢區間：{convertTime(weekStartDate, false)} ~ {convertTime(weekEndDate, false)}</div>
-			)
-		}
-      <div>
-		<Form.Select aria-label="選擇區域" onChange={changeArea} value={selectedArea} style={{marginTop: "10px"}}>
-			<option value="A">全部</option>
-			<option value="北部">北部</option>
-			<option value="中部">中部</option>
-			<option value="南部">南部</option>
-			<option value="東部">東部</option>
-			<option value="離島">離島</option>
-		</Form.Select>
-	  </div>
-	  <div style={{backgroundColor: "#8d949e", 
-	  	borderTopLeftRadius: "10px", 
-		borderTopRightRadius: "10px", 
-		width: "100%", height: "50px", 
-		marginTop: "5px",
-		textAlign: "center",
-		alignContent: "center",
-		fontSize: "large",
-		color: "white"}}>
-			活動列表
-		</div>
-	  <div>
-			{loading ? (<p>Loading...</p>) : (
-				<ListGroup variant="flush">
-					{areaData?.map((activity) => (
-					<ListGroup.Item className="d-flex justify-content-between align-items-start">
-					<div className="ms-2 me-auto">
-						<div className="fw-bold">{activity["name"]}</div>
-						<div>{activity["city"]} / {activity["location"]}</div>
-						<div>日期時間：{convertTime(activity["time"])}</div>
-						<div>演出者</div>
-						<Stack direction="horizontal" gap={2} style={{fontSize: "larger"}}>
-							{splitPerformers(activity["performers"])}
-						</Stack>
-						{activity["note"] != "" ? (
-							<div><div>備註</div>
-							<Card body>{activity["note"]}</Card></div>
-						) : (null)}
-					</div>
-					{activity["is_free"] ? (<Badge pill bg="success" style={{marginRight: "5px"}}>免費</Badge>) : (null)}
-					
-					<Badge bg="primary" pill>
-					{activity["area"]}
-					</Badge>
-				</ListGroup.Item>
-					))}
-				</ListGroup>
-			)}
-
-	  </div>
-	  <InvalidJWTModal isShow={expired} />
-    </div>
+	<Container className="mt-4">
+		<Row className="justify-content-md-center">
+			<Col>
+				<WeekSelector data={data} setData={setData} loading={loading} handleExpired={handleTokenExpired} setLoading={setLoading}></WeekSelector>
+			</Col>
+		</Row>
+		<Row>
+		<Col>
+			<Form.Select aria-label="選擇區域" onChange={changeArea} value={selectedArea} style={{marginTop: "10px"}}>
+				<option value="A">全部</option>
+				<option value="北部">北部</option>
+				<option value="中部">中部</option>
+				<option value="南部">南部</option>
+				<option value="東部">東部</option>
+				<option value="離島">離島</option>
+			</Form.Select>
+		</Col>
+		</Row>
+		<Row>
+		<ActivityBoard className={"bg-secondary text-white"} isLoading={loading} activities={areaData} />
+		   <InvalidJWTModal isShow={expired} />
+		</Row>
+	</Container>
   );
 }
 

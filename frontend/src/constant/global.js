@@ -1,7 +1,7 @@
 const APIUrl = 'http://localhost:3000/api'  // 8080!!!
 const DOMAIN = "http://localhost:80"
 const CLIENT_ID = "57588337508-r1si265oloevpksmlu0kg189cfmr03q8.apps.googleusercontent.com"
-const REDIRECT_URI = "http://localhost:80/login"
+const REDIRECT_URI = "http://localhost:3000/login"  // 80
 const GOOGLE_CALLBACK_URL = "https://www.googleapis.com/drive/v3/about?fields=user&access_token="
 
 // const AreaCode = {

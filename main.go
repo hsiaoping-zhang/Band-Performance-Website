@@ -33,13 +33,13 @@ func main() {
 	// Routing
 	// app.Get("/api/tasks", controllers.FetchTask)
 	app.Get("/api/activity", controllers.GetDefaultActivity)
-	app.Get("/api/activityList", middleware.AuthorizationAdmin, controllers.GetActivity)
+	app.Get("/api/activityList", controllers.GetActivity)
 	app.Get("/api/activity/:id", middleware.AuthorizationAdmin, controllers.GetActivityById)
 	app.Get("/api/CityList", controllers.GetCityList)
 	app.Post("/api/activity", controllers.CreateActivity)
 	app.Patch("/api/activity/:id", middleware.AuthorizationAdmin, controllers.UpdateActivity)
 	app.Delete("/api/activity/:id", middleware.AuthorizationAdmin, controllers.DeleteActivity)
-	app.Get("/api/weekActivity/:week", middleware.Authentication, controllers.GetWeekActivity)
+	app.Get("/api/weekActivity/:week", controllers.GetWeekActivity)
 
 	app.Get("/api/user/:permission_id", controllers.GetUserByPermissionId)
 	app.Post("/api/user/apply", controllers.CreateApplyUser)

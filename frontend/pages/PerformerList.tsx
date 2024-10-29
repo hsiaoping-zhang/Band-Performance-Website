@@ -92,8 +92,6 @@ function PerformerListPage() {
         // console.log(event?.target?["value"])
         // item = event.target.value
         modalPerformer[item] = event.target.value
-        console.log(modalPerformer[item])
-        // this.setState({value: event.target.value});:
     }
     
     const handleUpdatePerformer = (event) => {

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { GetAuthToken, GetToken } from '../utils/Cookie';
 import { APIUrl, DOMAIN } from '../src/constant/global';
-import { Badge, Button, Card, Col, Form, ListGroup, Modal, Row, Spinner, Stack } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { Badge, Button, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner, Stack } from 'react-bootstrap';
+import { redirect, useNavigate } from 'react-router-dom';
 
 function ActivityListPage() {
     const [activities, setActivities] = useState([])
@@ -56,6 +56,8 @@ function ActivityListPage() {
     const openEditActivityModal = (activity) => {
         console.log("edit:", activity.id, "!!!")
         console.log("eee")
+        navigate(`/updateActivity/${activity.id}`)
+        // redirect(`${DOMAIN}/updateActivity/${activity.id}`)
         // window.open(`${DOMAIN}/updateActivity/${activity.id}`)
 
         // setIsmodalShow(true)
@@ -134,7 +136,7 @@ function ActivityListPage() {
     }
 
     return (
-        <div className='m-5'>
+        <Container>
             <div style={{
                 backgroundColor: "#1858a6",
                 borderTopLeftRadius: "10px",
@@ -156,36 +158,35 @@ function ActivityListPage() {
 
                 <ListGroup variant="flush">
                     {activities?.map((activity) => (
-                        <ListGroup.Item className="d-flex justify-content-between align-items-start">
-                            <div className="ms-6 me-auto">
+                        <ListGroup.Item className="d-flex align-items-start">
+                            <div className="me-auto w-100">
+                            {/* <Row> */}
+                                {activity["is_free"] ? (<Badge pill bg="success" style={{ marginRight: "5px" }}>免費</Badge>) : (null)}
+                                <Badge bg="primary" pill>
+                                    {activity["area"]}
+                                </Badge>
                                 <div className="fw-bold">{activity["name"]}</div>
                                 <div>{activity["city"]} / {activity["location"]}</div>
                                 <div>日期時間：{convertTime(activity["time"])}</div>
                                 <div>演出者</div>
-                                <Stack direction="horizontal" gap={2} style={{ fontSize: "larger" }}>
+                                <Stack className="d-flex flex-wrap" direction="horizontal" gap={2} style={{ fontSize: "larger" }}>
                                     {splitPerformers(activity["performers"])}
                                 </Stack>
                                 {activity["note"] != "" ? (
-                                    <><div>備註</div>
+                                    <><div className='my-2'>備註</div>
                                         <Card body>{activity["note"]}</Card></>
                                 ) : (null)}
-                            </div>
+                            {/* </div> */}
                             
-                            <div className="ms-1 me-auto">
-                                <Col>
-                                <Row  style={{marginBottom: "10px"}}>{activity["is_free"] ? (<Badge pill bg="success" style={{ marginRight: "5px" }}>免費</Badge>) : (null)}</Row>
-                                <Row  style={{marginBottom: "10px"}}><Badge bg="primary" pill>
-                                    {activity["area"]}
-                                </Badge></Row>
-                                </Col>
+                            <Row className='mx-1'>
+                                <Button className='my-1' variant="success" onClick={() => openEditActivityModal(activity)}>編輯</Button>{'   '}
+                                <Button className='my-1' variant="danger" onClick={() => openDeleteActivityModal(activity)}>刪除</Button>
+                            </Row>
+                            {/* <div className="w-auto ms-auto">
+                                
+                            </div> */}
+                            {/* </Row> */}
                             </div>
-
-                            <div className="ms-1 ms-auto">
-
-                                <Button variant="success" onClick={() => openEditActivityModal(activity)}>編輯</Button>{'   '}
-                                <Button variant="danger" onClick={() => openDeleteActivityModal(activity)}>刪除</Button>
-                            </div>
-
                         </ListGroup.Item>
                     ))}
                 </ListGroup>
@@ -239,7 +240,7 @@ function ActivityListPage() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </Container>
 
     );
 }
