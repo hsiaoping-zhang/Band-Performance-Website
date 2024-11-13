@@ -4,12 +4,6 @@ import { OAuthSignIn } from '../utils/GoogleLogin';
 import { CLIENT_ID, REDIRECT_URI } from '../src/constant/global';
 
 function ApplicationLogin() {
-    const responseMessage = (response) => {
-        console.log(response);
-    };
-    const errorMessage = (error) => {
-        console.log(error);
-    };
     return (
         <div style={{height: "100vh"}}>
             <div style={{height: "50vh", display: "flex", alignItems: "center", textAlign: "center", justifyContent:"center",}}>

@@ -20,7 +20,7 @@ export default function NewActivity() {
     const handleClose = () => navigate("/activityList");
     const [newActivityId, setActivityId] = useState(0)
     const [performersList, setPerformersList] = useState([])
-    const [performerString, setPerformerString] = useState("宇宙人、告五人、鹿洐人")
+    const [performerString, setPerformerString] = useState("")
     const navigate = useNavigate();
     // const handleShow = () => setShow(true);
     // const cityApiUrl = "http://api.opencube.tw/twzipcode/get-citys"
@@ -32,7 +32,7 @@ export default function NewActivity() {
             .then((response) => response.json())
             .then((data) => {
                 let cities = data["data"]
-                console.log(cities)
+                // console.log(cities)
                 setData(cities)
                 setLoading(false)
             });
@@ -41,8 +41,6 @@ export default function NewActivity() {
     const handleCheckChange = (e) => {
         // setChecked(true)
         isFreeChecked ? setChecked(false) : setChecked(true)
-        // console.log(isFreeChecked)
-        // setChecked(e.target.checked);
     }
 
     const { Formik } = formik;
@@ -59,14 +57,7 @@ export default function NewActivity() {
         activityPerformers: yup.string().required(),
     });
 
-    const convertTime = (year, month, date, hour, minute) => {
-        let time = new Date(year, month, date, hour, minute);
-        return time
-        console.log(time)
-    }
-
     const splitPerformers = (values) => {
-        console.log(values)
         let spliter = ","
 
         let newPerformerString = values.activityPerformers.replaceAll(/、|ft\./g, spliter)
@@ -74,7 +65,6 @@ export default function NewActivity() {
 
         values.activityPerformers = newPerformerList.map((item) => item).join(spliter)
         setPerformersList(newPerformerList)
-        console.log(newPerformerList)
         return newPerformerList
     }
 
@@ -102,7 +92,6 @@ export default function NewActivity() {
                 performers: values.activityPerformers,
                 is_free: isFreeChecked,
                 note: values.activityNote,
-                permission_id: "17018581147448188124"
             })
         })
             .then(response => response.json())
@@ -112,9 +101,6 @@ export default function NewActivity() {
                     setActivityId(data['id'])
                 }
             })
-    }
-    const clicktest = (e) => {
-        console.log(e.target.value)
     }
 
     useEffect(() => {
@@ -137,7 +123,7 @@ export default function NewActivity() {
                     activityDate: (new Date().getDate()),
                     activityHour: 18,
                     activityMinute: 0,
-                    activityPerformers: "宇宙人、告五人、鹿洐人",
+                    activityPerformers: "",
                     activityIsFree: false,
                     activityNote: ""
                 }}

@@ -54,7 +54,7 @@ func GetUserByPermissionId(db *sql.DB, userPermissionId string) (User, error) {
 		return targetUser, err
 	}
 
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60)
 	taipeiTimeLastLoginTime := targetUser.LastLoginTime.In(loc) // UTC to "Aisa/Taipei" time
 	targetUser.LastLoginTime = taipeiTimeLastLoginTime
 

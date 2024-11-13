@@ -33,13 +33,13 @@ const WeekSelector = ({ data, setData, loading, setLoading, handleExpired }) =>{
 
 	// get area list pass to select element
 	const fetchWeekActivitiy = async (weekNumber) => {
-		console.log("GET fetchWeekActivitiy")
-		
+		console.log("GET fetchWeekActivitiy!!")
+		// console.log("env:", process.env.REACT_APP_API_URL)
 		let token = GetAuthToken()
 
 		fetch(APIUrl + `/weekActivity/${weekNumber}`, {
 			method: "GET",
-			headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` }
+			// headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` }
 		})
 		.then((response) => {
 			switch(response.status){
@@ -113,7 +113,10 @@ export default function Home() {
 	// get area list pass to select element
 	const fetchActivitiy = async () => {
 		// return null
-		return fetch(APIUrl + "/activity")
+		return fetch(APIUrl + "/activity", {
+			method: "GET",
+			// headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` }
+		})
 		.then((response) => {
 			switch(response.status){
 				case 200:

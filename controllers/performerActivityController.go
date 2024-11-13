@@ -17,12 +17,9 @@ func GetPerformerActivity(c *fiber.Ctx) error {
 	fmt.Printf("controller API: GetPerformerActivity\n")
 
 	performerName := c.Params("performerName")
-	// fmt.Print(c.Query("performerName"), "\n")
-	// query := c.Query("performerName")
-	// response := fmt.Sprintf("Received query: %s", query)
 
 	decodeName, _ := url.QueryUnescape(performerName)
-	fmt.Println("performerName:", decodeName, "\n")
+	// fmt.Println("performerName:", decodeName, "\n")
 
 	// search in DB
 	activities, err := models.GetPerformerActivity(initializers.DB, decodeName)

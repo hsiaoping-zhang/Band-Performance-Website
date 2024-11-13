@@ -1,22 +1,13 @@
-const APIUrl = 'http://localhost:3000/api'  // 8080!!!
-const DOMAIN = "http://localhost:80"
-const CLIENT_ID = "57588337508-r1si265oloevpksmlu0kg189cfmr03q8.apps.googleusercontent.com"
-const REDIRECT_URI = "http://localhost:3000/login"  // 80
+
+const APIUrl = "https://backend-57588337508.asia-east1.run.app/api"
+const REDIRECT_URI = "https://frontend-57588337508.asia-east1.run.app/login"  // 80
+// const APIUrl = "http://localhost:8080/api"
+// const REDIRECT_URI = "http://localhost:8080/login"  // 80
+const CLIENT_ID = `57588337508-r1si265oloevpksmlu0kg189cfmr03q8.apps.googleusercontent.com`   // ${process.env.CLIENT_ID}
 const GOOGLE_CALLBACK_URL = "https://www.googleapis.com/drive/v3/about?fields=user&access_token="
 
-// const AreaCode = {
-//     "全部": 0,
-//     "北部": 1,
-//     "中部": 2,
-//     "南部": 3,
-//     "東部": 4,
-//     "離島": 5 
-// }
-// const themeDefault = 'dark'
-// const namesOfModes = ['dark', 'moonlight', 'eclipse', 'light']
-
 const CityMapToArea = (city) => {
-    console.log('enter map function')
+    // console.log('enter map function')
 
     const areaCityMap = new Object()
 
@@ -47,4 +38,4 @@ const CityMapToArea = (city) => {
     return areaCityMap[city]
 }
 
-export { APIUrl, DOMAIN, CityMapToArea, CLIENT_ID, REDIRECT_URI, GOOGLE_CALLBACK_URL }
+export { APIUrl, CityMapToArea, CLIENT_ID, REDIRECT_URI, GOOGLE_CALLBACK_URL }

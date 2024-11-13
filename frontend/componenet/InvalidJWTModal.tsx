@@ -6,7 +6,6 @@ import { OAuthSignIn } from "../utils/GoogleLogin";
 import { RemoveAllToken } from "../utils/Cookie";
 
 export default function InvalidJWTModal(prop) {
-    //   const {user, setUser} = useContext(UserContext)
     const navigate = useNavigate();
     function handleClose(){
         // remove token
@@ -14,9 +13,6 @@ export default function InvalidJWTModal(prop) {
         window.location.reload();
     }
     
-    useEffect(() => {
-        // console.log("isshow:", prop.isShow)
-    })
     return (
         <Modal show={prop.isShow} onHide={handleClose}>
             <Modal.Header closeButton>

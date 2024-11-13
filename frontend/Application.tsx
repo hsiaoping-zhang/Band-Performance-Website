@@ -11,7 +11,6 @@ import Navbars from "./componenet/Navbar";
 import ApplicationLogin from "./pages/ApplicationLogin";
 import ApplySuccess from "./pages/ApplySuccess";
 import Login from "./pages/Login";
-import { SetToken } from "./utils/Cookie";
 import PerformerListPage from "./pages/PerformerList";
 import ActivityListPage from "./pages/ActivityList";
 import ApproveUser from "./pages/ApproveUser";
@@ -47,13 +46,13 @@ function App() {
                     <Route path="/applySuccess" element={<ApplySuccess />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/performerActivity" element={<PerformerActivity />}/>
-
+                    <Route path="/newActivity" element={<NewActivity />} />
                     {/* <Route element={<ProtectedRoutes permissions={[PermissionCode.Admin, PermissionCode.User]}/>}>
                         <Route path="/performerList" element={<PerformerListPage/>} />
                     </Route> */}
 
                     <Route element={<ProtectedRoutes permissions={[PermissionCode.Admin]}/>}>
-                        <Route path="/newActivity" element={<NewActivity />} />
+                        
                         <Route path="/performerList" element={<PerformerListPage/>} />
                         <Route path="/activityList" element={<ActivityListPage/>} />
                         <Route path="/updateActivity/:activity_id" element={<UpdateActivity />} />

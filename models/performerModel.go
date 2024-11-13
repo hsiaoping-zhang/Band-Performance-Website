@@ -18,7 +18,7 @@ func GetPerformerById(db *sql.DB, performerId string) (Performer, error) {
 
 	var targetPerformer Performer
 	fmt.Print("performerId:", performerId, "\n")
-	query := "SELECT id, name FROM performer WHERE id = ?"
+	query := "SELECT id, name FROM Performer WHERE id = ?"
 	row := db.QueryRow(query, targetPerformer)
 	fmt.Print(query, "\n")
 
@@ -35,7 +35,7 @@ func GetPerformers(db *sql.DB) ([]Performer, error) {
 	fmt.Print("model: GetPerformers\n")
 
 	var targetPerformers []Performer
-	query := "SELECT id, name, description FROM performer LIMIT 20"
+	query := "SELECT id, name, description FROM Performer LIMIT 20"
 
 	rows, err := db.Query(query)
 	if err != nil {
@@ -64,7 +64,7 @@ func GetPerformers(db *sql.DB) ([]Performer, error) {
 func CreatePerformer(db *sql.DB, performer Performer) (int64, error) {
 	fmt.Print("model: CreatePerformer\n")
 
-	query := "INSERT INTO performer (name, description) VALUES (?, ?)"
+	query := "INSERT INTO Performer (name, description) VALUES (?, ?)"
 
 	// 執行插入操作
 	result, err := db.Exec(query, performer.Name, performer.Description)
@@ -95,7 +95,7 @@ func CreatePerformersIfNotExisted(db *sql.DB, performers string) error {
 		names[i] = performer    // 將樂團名稱添加到 values 切片中
 	}
 
-	query := fmt.Sprintf("INSERT IGNORE INTO performer (name) VALUES %s", strings.Join(placeholders, ", "))
+	query := fmt.Sprintf("INSERT IGNORE INTO Performer (name) VALUES %s", strings.Join(placeholders, ", "))
 
 	if _, err := db.Exec(query, names...); err != nil {
 		return err
@@ -105,7 +105,7 @@ func CreatePerformersIfNotExisted(db *sql.DB, performers string) error {
 }
 
 func UpdatePerformer(db *sql.DB, performerId string, performer Performer) error {
-	query := "UPDATE performer SET name = ?, description = ? WHERE id = ?"
+	query := "UPDATE Performer SET name = ?, description = ? WHERE id = ?"
 	if _, err := db.Exec(query, performer.Name, performer.Description, performerId); err != nil {
 		return err
 	}
@@ -113,7 +113,7 @@ func UpdatePerformer(db *sql.DB, performerId string, performer Performer) error 
 }
 
 func DeletePerformer(db *sql.DB, performerId string) (int64, error) {
-	query := "DELETE FROM performer WHERE id = ?"
+	query := "DELETE FROM Performer WHERE id = ?"
 	result, err := db.Exec(query, performerId)
 	if err != nil {
 		return 0, err

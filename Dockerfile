@@ -1,52 +1,8 @@
 # # syntax = docker/dockerfile:1
 
-# # Adjust NODE_VERSION as desired
-# ARG NODE_VERSION=17.8.0
-# FROM node:${NODE_VERSION}-slim as base
-
-# LABEL fly_launch_runtime="Node.js"
-
-# # Node.js app lives here
-# WORKDIR /app
-
-# # Set production environment
-# ENV NODE_ENV="production"
-
-
-# # Throw-away build stage to reduce size of final image
-# FROM base as build
-
-# # Install packages needed to build node modules
-# RUN apt-get update -qq && \
-#     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-# # Install node modules
-# COPY package-lock.json package.json ./
-# RUN npm ci
-
-# # Copy application code
-# COPY . .
-
-
-# # Final stage for app image
-# FROM base
-
-# # Copy built application
-# COPY --from=build /app /app
-
-# # Start the server by default, this can be overwritten at runtime
-# EXPOSE 3000
-# CMD [ "npm", "run", "start" ]
-
-FROM golang:1.20.5 AS builder
+FROM golang:1.22 AS builder
 
 WORKDIR /app
-
-# RUN apk add dos2unix
-
-# RUN apt-get install dos2unix
-
-# RUN dos2unix /entrypoint.sh
 
 COPY go.mod go.sum ./
 
@@ -54,15 +10,24 @@ RUN go mod download
 
 COPY . .
 
+# 確保 migrations 資料夾被複製
+COPY migrations /app/migrations 
+
+# COPY wait-for-it.sh /app/wait-for-it.sh
+
+# 確保腳本在容器中可執行
+# RUN chmod +x /app/wait-for-it.sh 
 
 RUN CGO_ENABLED=0 go build -o main .
 
 FROM alpine:latest
 
+# 安裝 bash
+# RUN apk add --no-cache bash
+
 RUN apk add --no-cache mysql-client
 
 RUN apk --no-cache add ca-certificates
-
 
 
 WORKDIR /root/
@@ -73,6 +38,11 @@ COPY views/ ./views
 COPY --from=builder /app/main .
 
 COPY --from=builder /app/.env .
+
+COPY --from=builder /app/views ./views
+
+# 確保在這裡也複製
+COPY --from=builder /app/migrations ./migrations
 
 # 開放容器埠號
 EXPOSE 8080

@@ -21,7 +21,7 @@ func CreatePerformerActivity(db *sql.DB, performers string, activityId int) erro
 	}
 
 	query := fmt.Sprintf("INSERT INTO PerformerActivity (performer_id, activity_id) "+
-		"SELECT id, ? FROM performer where name IN (%s)", strings.Join(placeholders, ", "))
+		"SELECT id, ? FROM Performer where name IN (%s)", strings.Join(placeholders, ", "))
 
 	if _, err := db.Exec(query, args...); err != nil {
 		return err
@@ -31,7 +31,7 @@ func CreatePerformerActivity(db *sql.DB, performers string, activityId int) erro
 }
 
 func DeleteActivityInPerformerActivity(db *sql.DB, activityId string) (int64, error) {
-	queryPerformerActivity := "DELETE FROM performerActivity WHERE activity_id = ?"
+	queryPerformerActivity := "DELETE FROM PerformerActivity WHERE activity_id = ?"
 	result, err := db.Exec(queryPerformerActivity, activityId)
 	if err != nil {
 		return 0, err
@@ -43,18 +43,22 @@ func DeleteActivityInPerformerActivity(db *sql.DB, activityId string) (int64, er
 }
 
 func GetPerformerActivity(db *sql.DB, performerName string) ([]Activity, error) {
+	if performerName == "" {
+		return nil, nil
+	}
+
 	query := `SELECT activity.id, activity.name, activity.time, activity.area, activity.loc, activity.is_free, activity.note, activity.city, activity.performers
-		FROM performerActivity 
-		JOIN activity ON activity.id = performerActivity.activity_id
-		WHERE performer_id = (SELECT id FROM performer WHERE name = ?) AND YEARWEEK(activity.time, 1) >= YEARWEEK(CURDATE(), 1) ORDER BY time ASC`
-	rows, err := db.Query(query, performerName)
+		FROM PerformerActivity 
+		JOIN activity ON activity.id = PerformerActivity.activity_id
+		WHERE performer_id = (SELECT id FROM Performer WHERE name LIKE ?) AND YEARWEEK(activity.time, 1) >= YEARWEEK(CURDATE(), 1) ORDER BY time ASC`
+	performerNameString := "%" + performerName + "%"
+	rows, err := db.Query(query, performerNameString)
+
 	if err != nil {
 		return nil, err
 	}
-	fmt.Print("ok\n")
-
 	// defer rows.Close()
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60)
 
 	var activities []Activity
 	for rows.Next() {
@@ -64,10 +68,9 @@ func GetPerformerActivity(db *sql.DB, performerName string) ([]Activity, error) 
 		}
 		taipeiTime := activity.Time.In(loc) // UTC to "Aisa/Taipei" time
 		activity.Time = taipeiTime
-		fmt.Print(activity)
 		activities = append(activities, activity)
 	}
-
+	// TODO: null array -> OK
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}

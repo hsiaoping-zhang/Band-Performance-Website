@@ -44,7 +44,8 @@ func GetDefaultActivity(db *sql.DB) ([]Activity, error) {
 	}
 	defer rows.Close()
 
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	// loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60) // 定義 UTC+8 時區
 
 	for rows.Next() {
 		var activity Activity
@@ -73,7 +74,7 @@ func GetActivityList(db *sql.DB) ([]Activity, error) {
 	}
 	defer rows.Close()
 
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60)
 
 	for rows.Next() {
 		var activity Activity
@@ -102,7 +103,7 @@ func GetWeekActivity(db *sql.DB, week string) ([]Activity, error) {
 	}
 	defer rows.Close()
 
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60)
 
 	for rows.Next() {
 		var activity Activity
@@ -133,7 +134,7 @@ func GetActivityById(db *sql.DB, activityId string) (Activity, error) {
 		return selectedActivity, err
 	}
 
-	loc, _ := time.LoadLocation("Asia/Taipei")
+	loc := time.FixedZone("CST", 8*60*60)
 	taipeiTime := selectedActivity.Time.In(loc) // UTC to "Aisa/Taipei" time
 	selectedActivity.Time = taipeiTime
 

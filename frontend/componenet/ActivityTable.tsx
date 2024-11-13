@@ -17,11 +17,11 @@ export default function ActivityTable({ activities }) {
     }
 
     return (
-        activities ? (
+        activities != null && activities.length > 0 ? (
             <ListGroup variant="flush">
                 {activities?.map((activity) => (
                     <ListGroup.Item className="d-flex justify-content-between align-items-start bg-light text-dark">
-                        <div className="ms-2 me-auto">
+                        <div className="ms-2 me-auto w-100">
                             {activity["is_free"] ? (<Badge pill bg="success" style={{ marginRight: "5px" }}>免費</Badge>) : (null)}
                             <Badge bg="primary" pill>
                                 {activity["area"]}
@@ -35,7 +35,8 @@ export default function ActivityTable({ activities }) {
                                 {splitPerformers(activity["performers"])}
                             </Stack>
                             {activity["note"] != "" ? (
-                                <div><div>備註</div>
+                                <div className="w-100">
+                                    <div>備註</div>
                                     <Card body>{activity["note"]}</Card>
                                 </div>
 

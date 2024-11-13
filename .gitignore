@@ -3,3 +3,5 @@ gr
 .env
 frontend/build
 public/
+wait-for-it.sh
+migrations-sqlserver/

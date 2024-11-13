@@ -1,19 +1,21 @@
 package main
 
 import (
-	"os"
+	"fmt"
 
 	"band-app/controllers"
 	"band-app/initializers"
 	"band-app/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/template/html"
 )
 
 func init() {
 	initializers.LoadEnvVars()
 	initializers.ConnectToDB()
+	initializers.RunMigrations()
 }
 
 func main() {
@@ -24,6 +26,14 @@ func main() {
 	app := fiber.New(fiber.Config{
 		Views: engine,
 	})
+
+	// 設置 CORS 中介軟體
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     "https://frontend-57588337508.asia-east1.run.app", // 只允許你的 React 應用
+		AllowCredentials: true,                                              // 允許發送 cookie
+		AllowMethods:     "GET,POST,PATCH,DELETE,OPTIONS",                   // 允許的 HTTP 方法
+	}))
+	fmt.Print("cors setting!\n")
 
 	// Configure app
 	app.Static("/", "./public")
@@ -52,8 +62,8 @@ func main() {
 	app.Post("/api/performer/:id", controllers.GetPerformerById) //middleware.AuthorizationAdmin,
 	app.Get("/api/performerList", middleware.AuthorizationAdmin, controllers.GetPerformerList)
 	app.Post("/api/performer", controllers.CreatePerformer)
-	app.Patch("api/performer/:id", middleware.AuthorizationAdmin, controllers.UpdatePerformer)
-	app.Delete("api/performer/:id", controllers.DeletePerformer)
+	app.Patch("/api/performer/:id", middleware.AuthorizationAdmin, controllers.UpdatePerformer)
+	app.Delete("/api/performer/:id", controllers.DeletePerformer)
 
 	app.Get("/api/performerActivity/:performerName", controllers.GetPerformerActivity)
 
@@ -76,5 +86,5 @@ func main() {
 	}
 
 	// Start app
-	app.Listen(":" + os.Getenv("PORT"))
+	app.Listen(":8080")
 }

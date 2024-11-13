@@ -125,16 +125,15 @@ func CreateActivity(c *fiber.Ctx) error {
 	// Parse body
 	var createdActivity struct {
 		// id       int
-		Name             string    `json:"name"`
-		Date             string    `json:"date"`
-		Time             time.Time `json:"time"`
-		Area             string    `json:"area"`
-		City             string    `json:"city"`
-		Location         string    `json:"location"`
-		Performers       string    `json:"performers"`
-		IsFree           bool      `json:"is_free"`
-		Note             string    `json:"note"`
-		UserPermissionId string    `json:"permission_id"`
+		Name       string    `json:"name"`
+		Date       string    `json:"date"`
+		Time       time.Time `json:"time"`
+		Area       string    `json:"area"`
+		City       string    `json:"city"`
+		Location   string    `json:"location"`
+		Performers string    `json:"performers"`
+		IsFree     bool      `json:"is_free"`
+		Note       string    `json:"note"`
 	}
 
 	if err := c.BodyParser(&createdActivity); err != nil {
@@ -143,18 +142,18 @@ func CreateActivity(c *fiber.Ctx) error {
 	}
 
 	// TODO: check permission
-	user, err := models.GetUserByPermissionId(initializers.DB, createdActivity.UserPermissionId)
-	if err != nil {
-		return c.JSON(fiber.Map{
-			"status": 500,
-			"err":    err,
-		})
-	} else if user.Level != enum.Admin {
-		c.JSON(fiber.Map{
-			"status": 500, // permission error
-			"error":  "permission invalid",
-		})
-	}
+	// user, err := models.GetUserByPermissionId(initializers.DB, createdActivity.UserPermissionId)
+	// if err != nil {
+	// 	return c.JSON(fiber.Map{
+	// 		"status": 500,
+	// 		"err":    err,
+	// 	})
+	// } else if user.Level != enum.Admin {
+	// 	c.JSON(fiber.Map{
+	// 		"status": 500, // permission error
+	// 		"error":  "permission invalid",
+	// 	})
+	// }
 
 	// time.Date(2023, time.September, 5, 15, 30, 0, 0, time.Local)
 

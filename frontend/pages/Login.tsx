@@ -135,9 +135,9 @@ export default function Login() {
     return <div>
         <Modal show={isPendding} onHide={handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>成功申請</Modal.Title>
+                <Modal.Title>注意！</Modal.Title>
             </Modal.Header>
-            <Modal.Body>已經成功提交申請，請耐心等待，將自動轉回首頁</Modal.Body>
+            <Modal.Body>會員功能已停用，將轉回首頁</Modal.Body>
             <Modal.Footer>
                 <Button variant="primary" onClick={handleClose}>
                     OK

@@ -1,5 +1,22 @@
 version: '3'
 services:
+  db:
+    image: mysql:8.0
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=$DB_NAME
+      - MYSQL_USER=$DB_USER
+      - MYSQL_PASSWORD=$DB_PASSWORD
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+    target: gcr.io/band-program/db:latest
+    
+    
   backend:
     build:
       context: .
@@ -18,21 +35,10 @@ services:
       - app-network
     depends_on:
       - db
-
-  db:
-    image: mysql:8.0
-    restart: always
-    ports:
-      - 3306:3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
-      - MYSQL_DATABASE=$DB_NAME
-      - MYSQL_USER=$DB_USER
-      - MYSQL_PASSWORD=$DB_PASSWORD
     volumes:
-      - db_data:/var/lib/mysql
-    networks:
-      - app-network
+      - .:/app  # 確保掛載整個專案
+    target: backend
+    # command: [ "bash", "./wait-for-it.sh", "db:3306", "--", "./migrate.sh" ]
 
   frontend:
     build:
@@ -43,6 +49,8 @@ services:
       - "3000:80"
     networks:
       - app-network
+    environment:
+      - REACT_APP_API_URL=http://backend:8080
 
 volumes:
   db_data:

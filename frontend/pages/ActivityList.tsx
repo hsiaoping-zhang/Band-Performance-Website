@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Table from 'react-bootstrap/Table';
 import { GetAuthToken, GetToken } from '../utils/Cookie';
-import { APIUrl, DOMAIN } from '../src/constant/global';
+import { APIUrl } from '../src/constant/global';
 import { Badge, Button, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner, Stack } from 'react-bootstrap';
 import { redirect, useNavigate } from 'react-router-dom';
 
@@ -54,23 +54,8 @@ function ActivityListPage() {
     }
 
     const openEditActivityModal = (activity) => {
-        console.log("edit:", activity.id, "!!!")
-        console.log("eee")
+        // new window to edit
         navigate(`/updateActivity/${activity.id}`)
-        // redirect(`${DOMAIN}/updateActivity/${activity.id}`)
-        // window.open(`${DOMAIN}/updateActivity/${activity.id}`)
-
-        // setIsmodalShow(true)
-        // setModalAttribute({
-        //     mode: "edit",
-        //     title: "編輯",
-        //     btn: "儲存"
-        // })
-        // setModalPerformer({
-        //     id: performer.id,
-        //     name: performer.name,
-        //     description: performer.description
-        // })
     }
 
     const openDeleteActivityModal = (activity) => {
@@ -79,14 +64,7 @@ function ActivityListPage() {
             id: activity.id,
             name: activity.name,
             note: activity.note,
-            // performers: activity.performers
         })
-
-        // setModalAttribute({
-        //     mode: "delete",
-        //     title: "刪除",
-        //     btn: "確認刪除"
-        // })
         setIsmodalShow(true)
     }
 
@@ -103,13 +81,6 @@ function ActivityListPage() {
     }
 
     const handleDeleteActivity = (activity) => {
-        console.log("delete activity")
-
-        // let permissionId = GetToken("permission ID").toString()
-        // if (!permissionId) {
-        //     console.log("not user can not search")
-        // }
-
         return fetch(`${APIUrl}/activity/${modalActivity["id"]}`, {
             method: "DELETE",
             headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` }
@@ -123,6 +94,7 @@ function ActivityListPage() {
                     return
                 }
                 else {
+                    // success
                     setIsmodalShow(false)
                     let newList = activities.filter((activity) => (activity["id"] !== modalActivity["id"]))
                     setActivities(newList)
@@ -182,10 +154,6 @@ function ActivityListPage() {
                                 <Button className='my-1' variant="success" onClick={() => openEditActivityModal(activity)}>編輯</Button>{'   '}
                                 <Button className='my-1' variant="danger" onClick={() => openDeleteActivityModal(activity)}>刪除</Button>
                             </Row>
-                            {/* <div className="w-auto ms-auto">
-                                
-                            </div> */}
-                            {/* </Row> */}
                             </div>
                         </ListGroup.Item>
                     ))}

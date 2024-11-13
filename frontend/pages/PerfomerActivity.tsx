@@ -16,6 +16,7 @@ export default function PerformerActivity() {
         .then((response) => {
             if(response.status != 200){
                 console.log("error")
+                setActivities([])
             }
             return response.json()
         })
