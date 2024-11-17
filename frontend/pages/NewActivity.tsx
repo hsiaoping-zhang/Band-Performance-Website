@@ -19,6 +19,7 @@ export default function NewActivity() {
     const [submitSuccess, setSubmitStatus] = useState(false);
     const handleClose = () => navigate("/activityList");
     const [newActivityId, setActivityId] = useState(0)
+    const [submitInfo, setSubmitInfo] = useState("")
     const [performersList, setPerformersList] = useState([])
     const [performerString, setPerformerString] = useState("")
     const navigate = useNavigate();
@@ -94,11 +95,19 @@ export default function NewActivity() {
                 note: values.activityNote,
             })
         })
-            .then(response => response.json())
+            .then(response => {
+                if(response.status != 200){
+                    setSubmitStatus(true)
+                    setSubmitInfo("新增失敗，請再試一次或者聯絡管理員")
+                }
+                else{
+                    return response.json()   
+                }
+            })
             .then(data => {
                 if (!!data['id']) {
                     setSubmitStatus(true)
-                    setActivityId(data['id'])
+                    setSubmitInfo(`活動新增成功，活動 ID : ${data['id']}`)
                 }
             })
     }
@@ -279,9 +288,9 @@ export default function NewActivity() {
 
             <Modal show={submitSuccess} onHide={handleClose}>
                 <Modal.Header closeButton>
-                    <Modal.Title>新增完成</Modal.Title>
+                    <Modal.Title>新增狀態</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>活動新增成功，活動 ID : {newActivityId}</Modal.Body>
+                <Modal.Body>{submitInfo}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="primary" onClick={handleClose}>
                         OK

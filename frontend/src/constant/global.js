@@ -1,14 +1,12 @@
 
-const APIUrl = "https://backend-57588337508.asia-east1.run.app/api"
-const REDIRECT_URI = "https://frontend-57588337508.asia-east1.run.app/login"  // 80
-// const APIUrl = "http://localhost:8080/api"
-// const REDIRECT_URI = "http://localhost:8080/login"  // 80
+// const APIUrl = "https://backend-57588337508.asia-east1.run.app/api"
+// const REDIRECT_URI = "https://frontend-57588337508.asia-east1.run.app/login"  // 80
+const APIUrl = "http://localhost:8080/api"
+const REDIRECT_URI = "http://localhost:8080/login"  // 80
 const CLIENT_ID = `57588337508-r1si265oloevpksmlu0kg189cfmr03q8.apps.googleusercontent.com`   // ${process.env.CLIENT_ID}
 const GOOGLE_CALLBACK_URL = "https://www.googleapis.com/drive/v3/about?fields=user&access_token="
 
 const CityMapToArea = (city) => {
-    // console.log('enter map function')
-
     const areaCityMap = new Object()
 
     function addArea(city, area){
@@ -38,4 +36,12 @@ const CityMapToArea = (city) => {
     return areaCityMap[city]
 }
 
-export { APIUrl, CityMapToArea, CLIENT_ID, REDIRECT_URI, GOOGLE_CALLBACK_URL }
+const StatusCode = {
+    OK: 200,
+    StatusAccepted: 202,
+    Unauthorizontal: 401,
+    InternalServerError:501,
+
+}
+
+export { APIUrl, CityMapToArea, CLIENT_ID, REDIRECT_URI, GOOGLE_CALLBACK_URL, StatusCode }

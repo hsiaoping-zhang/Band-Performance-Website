@@ -8,36 +8,30 @@ import (
 	"band-app/models"
 
 	"github.com/gofiber/fiber/v2"
-	// jtoken "github.com/golang-jwt/jwt/v4"
-	// "github.com/robbyklein/gr/models"
 )
 
+// for google login and check user status
 func GetUserByPermissionId(c *fiber.Ctx) error {
-	// Get all activity
 	fmt.Printf("controller API: GetUserByPermissionId\n")
 
 	permissionId := c.Params("permission_id")
 
 	userResult, err := models.GetUserByPermissionId(initializers.DB, permissionId)
 	if err != nil {
-		fmt.Print("error:", err)
-		return c.JSON(fiber.Map{
-			"status": 500,
-		})
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{})
 	}
 
-	return c.JSON(fiber.Map{
-		"status": 200,
-		"user":   userResult,
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"user": userResult,
 	})
 }
 
+// NOT USED: for membership
 func CreateApplyUser(c *fiber.Ctx) error {
 	fmt.Print("API: CreateUser\n")
 
-	// Parse body
+	// parse body
 	var createdUser struct {
-		// id       int
 		Name          string    `json:"name"`
 		Email         string    `json:"email"`
 		PermissionId  string    `json:"permission_id"`
@@ -50,18 +44,19 @@ func CreateApplyUser(c *fiber.Ctx) error {
 		return err
 	}
 
-	fmt.Print((createdUser))
-
 	// check if exist
-	// if searchUserResult, err := models.GetUserByPermissionId(initializers.DB, createdUser.PermissionId); err != nil {
-	// 	fmt.Print("User exist\n")
-	// 	if searchUserResult.IsValid {
-	// 		fmt.Print("User has apply\n")
-	// 	} else {
-	// 		fmt.Print("User apply not valid\n")
-	// 	}
-	// 	return err
-	// }
+	searchUserResult, err := models.GetUserByPermissionId(initializers.DB, createdUser.PermissionId)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"err": err,
+		})
+	}
+	// TODO: User nil
+	if searchUserResult.IsValid {
+		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
+			"err": "使用者已申請",
+		})
+	}
 
 	newUser := models.User{
 		Name:          createdUser.Name,
@@ -72,25 +67,19 @@ func CreateApplyUser(c *fiber.Ctx) error {
 		CreatedTime:   createdUser.LastLoginTime,
 		LastLoginTime: createdUser.LastLoginTime,
 	}
-	// Time:     parseTime}
 
-	// DB implement: INSERT
-
-	// result := initializers.DB.CreateActivity(&newActivity)
 	if returnId, err := models.CreateApplyUser(initializers.DB, newUser); err != nil {
-		return c.JSON(fiber.Map{
-			"status": 500,
-			"error":  err,
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"err": err,
 		})
 	} else {
-		return c.JSON(fiber.Map{
-			"status": 200,
-			"id":     returnId,
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{
+			"id": returnId,
 		})
 	}
-	// mock: Create record
 }
 
+// for adminstrator
 func GetUnApprovedUsers(c *fiber.Ctx) error {
 	fmt.Print("API: GetUnApprovedUsers\n")
 
@@ -105,10 +94,11 @@ func GetUnApprovedUsers(c *fiber.Ctx) error {
 	})
 }
 
+// for adminstrator
 func ApproveUser(c *fiber.Ctx) error {
 	fmt.Print("API: ApproveUser\n")
 
-	// Parse body
+	// parse body
 	var userInfo struct {
 		Email string `json:"email"`
 	}

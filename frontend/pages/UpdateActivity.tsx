@@ -20,6 +20,7 @@ export default function UpdateActivity() {
     // let activityData = new Object()
     const [isFreeChecked, setChecked] = useState(false); 
     const [submitSuccess, setSubmitStatus] = useState(false);
+    const [submitInfo, setSubmitInfo] = useState("")
     const handleClose = () => navigate("/activityList");
     const token = GetAuthToken()
 
@@ -94,12 +95,17 @@ export default function UpdateActivity() {
                 note: values.activityNote
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data['success']){
+        .then(response => {
+            if(response.status != 200){
+                setSubmitInfo("更新失敗，請重新嘗試或聯絡管理員")
+                setSubmitStatus(true)
+            }
+            else{
+                setSubmitInfo(`活動更新成功，活動 ID : ${activity_id}，即將跳回首頁`)
                 setSubmitStatus(true)
             }
         })
+        
     }
 
     useEffect(() => {
@@ -274,9 +280,9 @@ export default function UpdateActivity() {
             (<div>...</div>)}
         <Modal show={submitSuccess} onHide={handleClose}>
             <Modal.Header closeButton>
-            <Modal.Title>更新完成</Modal.Title>
+            <Modal.Title>更新狀態</Modal.Title>
             </Modal.Header>
-            <Modal.Body>活動更新成功，活動 ID : {activity_id}，即將跳回首頁</Modal.Body>
+            <Modal.Body>{submitInfo}</Modal.Body>
             <Modal.Footer>
             <Button variant="primary" onClick={handleClose}>
                 OK

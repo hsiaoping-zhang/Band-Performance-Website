@@ -5,15 +5,7 @@ import (
 	"time"
 
 	"database/sql"
-	"strings"
-	// "gorm.io/gorm"
 )
-
-type Task struct {
-	// gorm.Model
-	Title string `json:"title"`
-	Body  string `json:"body"`
-}
 
 type Activity struct {
 	Id         int       `json:"id"`
@@ -27,13 +19,6 @@ type Activity struct {
 	Note       string    `json:"note"`
 }
 
-func ConvertPerformersStringToList(performers string) []string {
-	array := strings.Split(performers, ",")
-	return array
-}
-
-// var DB *sql.DB
-
 func GetDefaultActivity(db *sql.DB) ([]Activity, error) {
 	fmt.Print("model: GetDefaultActivity\n")
 	var activities []Activity
@@ -44,7 +29,6 @@ func GetDefaultActivity(db *sql.DB) ([]Activity, error) {
 	}
 	defer rows.Close()
 
-	// loc, _ := time.LoadLocation("Asia/Taipei")
 	loc := time.FixedZone("CST", 8*60*60) // 定義 UTC+8 時區
 
 	for rows.Next() {
@@ -64,7 +48,7 @@ func GetDefaultActivity(db *sql.DB) ([]Activity, error) {
 	return activities, nil
 }
 
-func GetActivityList(db *sql.DB) ([]Activity, error) {
+func GetAllActivityList(db *sql.DB) ([]Activity, error) {
 	fmt.Print("model: GetActivityList\n")
 	var activities []Activity
 	query := "SELECT id, name, time, city, area, loc, performers, is_free, note FROM activity WHERE YEARWEEK(time, 1) >= YEARWEEK(CURDATE(), 1) ORDER BY time ASC"
@@ -128,9 +112,9 @@ func GetActivityById(db *sql.DB, activityId string) (Activity, error) {
 	var selectedActivity Activity
 	query := "SELECT id, name, time, city, area, loc, performers, is_free, note FROM activity where id = ?"
 	row := db.QueryRow(query, activityId)
-	// fmt.Print(row)
 
-	if err := row.Scan(&selectedActivity.Id, &selectedActivity.Name, &selectedActivity.Time, &selectedActivity.City, &selectedActivity.Area, &selectedActivity.Location, &selectedActivity.Performers, &selectedActivity.IsFree, &selectedActivity.Note); err != nil {
+	if err := row.Scan(&selectedActivity.Id, &selectedActivity.Name, &selectedActivity.Time, &selectedActivity.City,
+		&selectedActivity.Area, &selectedActivity.Location, &selectedActivity.Performers, &selectedActivity.IsFree, &selectedActivity.Note); err != nil {
 		return selectedActivity, err
 	}
 
@@ -145,8 +129,6 @@ func CreateActivity(db *sql.DB, activity Activity) (int64, error) {
 	fmt.Print("model: CreateActivity\n")
 
 	query := "INSERT INTO activity (name, city, area, loc, time, is_free, performers, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-
-	// 執行插入操作
 	result, err := db.Exec(query, activity.Name, activity.City, activity.Area, activity.Location, activity.Time, activity.IsFree, activity.Performers, activity.Note)
 	if err != nil {
 		fmt.Print(activity.Time, "\n")
@@ -154,26 +136,15 @@ func CreateActivity(db *sql.DB, activity Activity) (int64, error) {
 		return -1, err
 	}
 
-	// 取得自動生成的 ID
 	returnId, err := result.LastInsertId()
 	if err != nil {
 		return -1, err
 	}
 
-	// // PerformerActivity table
-	// performerList := ConvertPerformersStringToList(activity.Performers)
-	// if err = models.CreatePerformerActivity(db, performerList, returnId); err != nil {
-	// 	fmt.Print(err)
-	// 	return -1, err
-	// }
-
 	return returnId, err
 }
 
-// update
-
 func UpdateActivity(db *sql.DB, activityId string, activity Activity) error {
-	// TODO: add the nessesary column
 	query := "UPDATE activity SET name = ?, city = ?, area = ?, loc = ?, time = ?, is_free = ?, performers = ?, note = ? WHERE id = ?"
 	_, err := db.Exec(query, activity.Name, activity.City, activity.Area, activity.Location, activity.Time, activity.IsFree, activity.Performers, activity.Note, activityId)
 	if err != nil {
@@ -182,10 +153,7 @@ func UpdateActivity(db *sql.DB, activityId string, activity Activity) error {
 	return nil
 }
 
-// delete
 func DeleteActivity(db *sql.DB, activityId string) (int64, error) {
-
-	// delete activity
 	queryActivity := "DELETE FROM activity WHERE id = ?"
 	result, err := db.Exec(queryActivity, activityId)
 	if err != nil {

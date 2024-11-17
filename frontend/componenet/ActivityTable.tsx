@@ -26,7 +26,6 @@ export default function ActivityTable({ activities }) {
                             <Badge bg="primary" pill>
                                 {activity["area"]}
                             </Badge>
-
                             <div className="fw-bold mt-2">{activity["name"]}</div>
                             <div>{activity["city"]} / {activity["location"]}</div>
                             <div>日期時間：{convertTime(activity["time"])}</div>
@@ -39,12 +38,8 @@ export default function ActivityTable({ activities }) {
                                     <div>備註</div>
                                     <Card body>{activity["note"]}</Card>
                                 </div>
-
                             ) : (null)}
-
-                            
                         </div>
-
                     </ListGroup.Item>
                 ))}
             </ListGroup>) :

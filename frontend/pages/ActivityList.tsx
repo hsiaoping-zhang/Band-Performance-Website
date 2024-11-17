@@ -4,6 +4,7 @@ import { GetAuthToken, GetToken } from '../utils/Cookie';
 import { APIUrl } from '../src/constant/global';
 import { Badge, Button, Card, Col, Container, Form, ListGroup, Modal, Row, Spinner, Stack } from 'react-bootstrap';
 import { redirect, useNavigate } from 'react-router-dom';
+import InfoModal from '../componenet/InformationModal';
 
 function ActivityListPage() {
     const [activities, setActivities] = useState([])
@@ -197,7 +198,9 @@ function ActivityListPage() {
                 </Modal.Footer>
             </Modal>
 
-            <Modal size="lg" show={isUpdateMessageShow} onHide={handleModalClose}>
+            <InfoModal size="lg" isShow={isUpdateMessageShow} title="更新訊息" info={updateMessage} handleClose={handleModalClose} />
+
+            {/* <Modal size="lg" show={isUpdateMessageShow} onHide={handleModalClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>更新訊息</Modal.Title>
                 </Modal.Header>
@@ -207,7 +210,7 @@ function ActivityListPage() {
                         OK
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
         </Container>
 
     );

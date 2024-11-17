@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Badge, Button, Card, Form, ListGroup, Stack, Container } from "react-bootstrap";
 import { APIUrl } from "../src/constant/global";
-import ActivityTable from "../componenet/ActivityTable";
 import ActivityBoard from "../componenet/ActivityBoard";
 
 export default function PerformerActivity() {
@@ -15,7 +14,6 @@ export default function PerformerActivity() {
         fetch(`${APIUrl}/performerActivity/${encodeURIComponent(performerName)}`)
         .then((response) => {
             if(response.status != 200){
-                console.log("error")
                 setActivities([])
             }
             return response.json()

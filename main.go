@@ -41,12 +41,11 @@ func main() {
 	// jwt := middleware.JWTMiddleware()
 
 	// Routing
-	// app.Get("/api/tasks", controllers.FetchTask)
 	app.Get("/api/activity", controllers.GetDefaultActivity)
-	app.Get("/api/activityList", controllers.GetActivity)
+	app.Get("/api/activityList", middleware.AuthorizationAdmin, controllers.GetActivity)
 	app.Get("/api/activity/:id", middleware.AuthorizationAdmin, controllers.GetActivityById)
 	app.Get("/api/CityList", controllers.GetCityList)
-	app.Post("/api/activity", controllers.CreateActivity)
+	app.Post("/api/activity", middleware.AuthorizationAdmin, controllers.CreateActivity)
 	app.Patch("/api/activity/:id", middleware.AuthorizationAdmin, controllers.UpdateActivity)
 	app.Delete("/api/activity/:id", middleware.AuthorizationAdmin, controllers.DeleteActivity)
 	app.Get("/api/weekActivity/:week", controllers.GetWeekActivity)
@@ -59,11 +58,11 @@ func main() {
 	// app.Post("/api/user/auth/login", controllers.Login)
 	app.Post("/api/user/auth/googleLogin", controllers.HandleGoogleLoginResponse)
 
-	app.Post("/api/performer/:id", controllers.GetPerformerById) //middleware.AuthorizationAdmin,
+	// app.Post("/api/performer/:id", middleware.AuthorizationAdmin, controllers.GetPerformerById) //middleware.AuthorizationAdmin,
 	app.Get("/api/performerList", middleware.AuthorizationAdmin, controllers.GetPerformerList)
-	app.Post("/api/performer", controllers.CreatePerformer)
+	app.Post("/api/performer", middleware.AuthorizationAdmin, controllers.CreatePerformer)
 	app.Patch("/api/performer/:id", middleware.AuthorizationAdmin, controllers.UpdatePerformer)
-	app.Delete("/api/performer/:id", controllers.DeletePerformer)
+	app.Delete("/api/performer/:id", middleware.AuthorizationAdmin, controllers.DeletePerformer)
 
 	app.Get("/api/performerActivity/:performerName", controllers.GetPerformerActivity)
 

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"band-app/utils"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -8,9 +9,7 @@ import (
 )
 
 func CreatePerformerActivity(db *sql.DB, performers string, activityId int) error {
-
-	performersArray := strings.Split(performers, ",")
-
+	performersArray := utils.ConvertPerformersStringToList(performers)
 	placeholders := make([]string, len(performersArray))
 	args := make([]interface{}, len(performersArray)+1)
 	args[0] = activityId
@@ -42,7 +41,7 @@ func DeleteActivityInPerformerActivity(db *sql.DB, activityId string) (int64, er
 
 }
 
-func GetPerformerActivity(db *sql.DB, performerName string) ([]Activity, error) {
+func GetPerformerActivityByPerformerName(db *sql.DB, performerName string) ([]Activity, error) {
 	if performerName == "" {
 		return nil, nil
 	}
@@ -57,10 +56,9 @@ func GetPerformerActivity(db *sql.DB, performerName string) ([]Activity, error) 
 	if err != nil {
 		return nil, err
 	}
-	// defer rows.Close()
-	loc := time.FixedZone("CST", 8*60*60)
 
 	var activities []Activity
+	loc := time.FixedZone("CST", 8*60*60)
 	for rows.Next() {
 		var activity Activity
 		if err := rows.Scan(&activity.Id, &activity.Name, &activity.Time, &activity.Area, &activity.Location, &activity.IsFree, &activity.Note, &activity.City, &activity.Performers); err != nil {

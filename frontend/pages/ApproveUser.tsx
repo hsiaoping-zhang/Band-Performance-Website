@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table } from "react-bootstrap";
-import { APIUrl } from "../src/constant/global";
+import { APIUrl, StatusCode } from "../src/constant/global";
 import { GetAuthToken } from "../utils/Cookie";
 import InfoModal from "../componenet/InformationModal"
 
@@ -17,7 +17,7 @@ export default function ApproveUser(){
             headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` }
         })
         .then((response) => {
-            if(response.status != 200){
+            if(response.status != StatusCode.OK){
                 // there is error
                 return
             }
@@ -39,8 +39,7 @@ export default function ApproveUser(){
             })
         })
         .then((response) => {
-            
-            if(response.status == 200){
+            if(response.status == StatusCode.OK){
                 setModalInfo({
                     title: "成功",
                     info: `使用者 ${user["name"]} 已通過`
@@ -95,7 +94,7 @@ export default function ApproveUser(){
                     ))}
                 </tbody>
             </Table>
-            <InfoModal isShow={isShow} title={modalInfo.title} info={modalInfo.info} handleClose={setIsShowClose} />
+            <InfoModal size="medium" isShow={isShow} title={modalInfo.title} info={modalInfo.info} handleClose={setIsShowClose} />
             </>
         )}
         </div>

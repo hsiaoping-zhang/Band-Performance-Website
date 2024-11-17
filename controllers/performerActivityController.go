@@ -4,13 +4,10 @@ import (
 	"fmt"
 	"net/url"
 
-	// "band-app/enum"
-
 	"band-app/initializers"
 	"band-app/models"
 
 	"github.com/gofiber/fiber/v2"
-	// "github.com/robbyklein/gr/models"
 )
 
 func GetPerformerActivity(c *fiber.Ctx) error {
@@ -18,11 +15,11 @@ func GetPerformerActivity(c *fiber.Ctx) error {
 
 	performerName := c.Params("performerName")
 
+	// decode url to text
 	decodeName, _ := url.QueryUnescape(performerName)
-	// fmt.Println("performerName:", decodeName, "\n")
 
 	// search in DB
-	activities, err := models.GetPerformerActivity(initializers.DB, decodeName)
+	activities, err := models.GetPerformerActivityByPerformerName(initializers.DB, decodeName)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"err": err,
@@ -32,5 +29,4 @@ func GetPerformerActivity(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"activity": activities,
 	})
-
 }

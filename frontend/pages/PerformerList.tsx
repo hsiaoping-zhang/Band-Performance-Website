@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table';
 import { GetAuthToken, GetToken } from '../utils/Cookie';
 import { APIUrl } from '../src/constant/global';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { string } from 'yup';
+import InfoModal from '../componenet/InformationModal';
 
 function PerformerListPage() {
     const [performers, setPerformers] = useState([])
@@ -16,7 +16,6 @@ function PerformerListPage() {
 
     useEffect(() => {
         fetchPerformerList()
-        // console.log("isAuth:", isAuth)
     }, [])
 
     // get area list pass to select element
@@ -39,12 +38,12 @@ function PerformerListPage() {
             headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
         })
             .then((response) => {
-                console.log("response status code:", response.status)
                 if(response.status != 200){
-                    console.log("There is something error:", response.json()["err"])
                     setPerformers([])
                 }
-                return response.json()
+                else{
+                    return response.json()
+                }
             })
             .then((data) => {
                 setPerformers(data["performers"])
@@ -89,8 +88,6 @@ function PerformerListPage() {
     }
 
     const  handleInputChange = (event, item) => {
-        // console.log(event?.target?["value"])
-        // item = event.target.value
         modalPerformer[item] = event.target.value
     }
     
@@ -100,22 +97,20 @@ function PerformerListPage() {
         console.log("POST updatePerformer")
         let token = GetAuthToken()
 
-        console.log(modalPerformer)
-
         return fetch(`${APIUrl}/performer/${modalPerformer?.id}`, {
             method: "PATCH",
             headers: { 'Content-Type': 'application/json', "Authorization": `Bearer ${token}` },
             body: JSON.stringify({
                 id: modalPerformer?.id.toString(),
                 name: modalPerformer?.name,
-                description: modalPerformer.description,
-                // permissionId: "17018581147448188124",
+                description: modalPerformer.description
             })
         })
         .then((response) => {
             if (response.status == 200) {
                 // update list
                 let newList = performers.map((performer) => {
+                    // update the selected performer
                     if(performer["id"] == modalPerformer.id){
                         performer.name = modalPerformer.name
                         performer.description = modalPerformer.description
@@ -240,18 +235,7 @@ return (
                 </Button>
             </Modal.Footer>
         </Modal>
-        
-        <Modal size="lg" show={isUpdateMessageShow} onHide={handleModalClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>更新訊息</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{updateMessage}</Modal.Body>
-            <Modal.Footer>
-                <Button variant="primary" onClick={handleModalClose}>
-                    OK
-                </Button>
-            </Modal.Footer>
-        </Modal>
+        <InfoModal size="lg" isShow={isUpdateMessageShow} title="更新訊息" info={updateMessage} handleClose={handleModalClose} />
     </div>
 
 );

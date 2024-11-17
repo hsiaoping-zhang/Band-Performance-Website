@@ -1,7 +1,11 @@
 node_modules
 gr
 .env
-frontend/build
+frontend/build/index.html
+frontend/build/Application.js
+frontend/build/Application.js.map
 public/
 wait-for-it.sh
 migrations-sqlserver/
+migrations-sqlsever/1_create_init_table.up.sql
+migrations-sqlsever/2_create_performerActivity_table.up.sql

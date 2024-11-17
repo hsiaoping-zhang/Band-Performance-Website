@@ -8,7 +8,6 @@ export const SetToken = async (name, token) => {
     cookies.set(name, token,
         { path: '/', secure: true, sameSite: true }
     );
-    console.log("set token:", cookies.get(name));
 };
 
 export const RemoveToken = (name) => {

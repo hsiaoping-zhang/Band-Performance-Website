@@ -1,8 +1,8 @@
 import React from "react";
-import { Button, Modal } from "react-bootstrap";
 import ActivityTable from "./ActivityTable";
 
 export default function ActivityBoard({ className, isLoading, activities }) {
+    // className: react-bootstrap build-in class
     return (
         <div>
             <div className={className} style={{
@@ -28,7 +28,6 @@ export default function ActivityBoard({ className, isLoading, activities }) {
                 </div>) : (
                     <ActivityTable activities={activities} />
 			)}
-
 	  </div>
     )
 }

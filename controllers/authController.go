@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 	"band-app/utils"
 
 	"github.com/gofiber/fiber/v2"
-	// "github.com/robbyklein/gr/models"
 )
 
 var GOOGLE_INFO_URL = "https://www.googleapis.com/drive/v3/about?fields=user&access_token="
@@ -32,27 +30,7 @@ type userInfo struct {
 	User user `json:"user"`
 }
 
-func parseUserInfo(response *http.Response) (userInfo, error) {
-	// 讀取回應 Body
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Fatalf("Failed to read response body: %v", err)
-		return userInfo{}, err
-	}
-
-	info := userInfo{}
-
-	if err := json.Unmarshal(body, &info); err != nil {
-		log.Fatalf("Failed to parse JSON response: %v", err)
-		return userInfo{}, err
-	}
-
-	fmt.Print("success\n")
-	fmt.Print("userInfo:", info)
-
-	return info, nil
-}
-
+// TODO: user role with admin or normal user
 func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 	fmt.Print("HandleGoogleLoginResponse\n")
 
@@ -62,12 +40,11 @@ func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&bodyData); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "參數錯誤",
+			"error": err,
 		})
 	}
 
 	response, err := http.Get(GOOGLE_INFO_URL + bodyData.AccessToken)
-	fmt.Print(response)
 	if response.StatusCode != fiber.StatusOK {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"error": err,
@@ -83,10 +60,10 @@ func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 	}
 
 	// check user status
-	user, err := models.GetUserByPermissionId(initializers.DB, obtainedUserInfo.User.PermissionId)
+	user, err := models.GetUserByEmail(initializers.DB, obtainedUserInfo.User.EmailAddress)
+
+	// not found, register a new user
 	if err != nil {
-		fmt.Print(err, "\n")
-		// there is no user, register user
 		newUser := models.User{
 			Name:          obtainedUserInfo.User.DisplayName,
 			Email:         obtainedUserInfo.User.EmailAddress,
@@ -109,6 +86,7 @@ func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 			"info":   "請等待管理員開通權限",
 		})
 	}
+
 	// invalid user
 	if !user.IsValid {
 		return c.Status(fiber.StatusAccepted).JSON(fiber.Map{
@@ -116,14 +94,12 @@ func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 		})
 	}
 
-	// record to databse
+	// login, record to databse
 	if err = models.RecordLoginTime(initializers.DB, user.PermissionId); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"err": err,
 		})
 	}
-
-	fmt.Print("RecordLoginTime finish\n")
 
 	// generate token
 	token, err := utils.GenerateLoginToken(user.PermissionId, user.Email, string(user.Level))
@@ -138,4 +114,23 @@ func HandleGoogleLoginResponse(c *fiber.Ctx) error {
 		"token": token,
 	})
 
+}
+
+func parseUserInfo(response *http.Response) (userInfo, error) {
+	// 讀取回應 body
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		// fmt.Print("Failed to read response body: ", err)
+		return userInfo{}, err
+	}
+
+	info := userInfo{}
+	if err := json.Unmarshal(body, &info); err != nil {
+		fmt.Print("Failed to parse JSON response: ", err)
+		return userInfo{}, err
+	}
+
+	// fmt.Print("userInfo:", info, "\n")
+
+	return info, nil
 }

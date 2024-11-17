@@ -31,12 +31,8 @@ function ApplicationLogin() {
                             
                         </div>
                         <div className="g-signin2" data-onsuccess="onSignIn"></div>
-                        {/* <button className='btn' onClick={OAuthSignIn}>
-                        Apply using Google 🚀
-                        </button> */}
                     </GoogleOAuthProvider>
                     <div>聯絡方式：hsiaoping.zhang@gmail.com</div>
-                    {/* <GoogleLogin onSuccess={responseMessage} onError={errorMessage} /> */}
                 </div>
             </div>
         </div>
